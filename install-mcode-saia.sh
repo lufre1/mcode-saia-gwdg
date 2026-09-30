@@ -2,9 +2,9 @@
 #
 # install-mcode-saia.sh — GENERATED FILE, DO NOT EDIT.
 # Regenerate with: ./build.sh  (in the mcode-saia repo)
-# Source: mcode-saia commit 70ce3c7-dirty, packed 2026-09-22T07:59:13Z
+# Source: mcode-saia commit 604e845-dirty, packed 2026-09-29T20:04:09Z
 #
-# Installs the GWDG SAIA setup for mcode: provider + 16 models.
+# Installs the GWDG SAIA setup for mcode: provider + 14 models.
 
 set -euo pipefail
 
@@ -17,7 +17,7 @@ usage() {
 Usage: SAIA_API_KEY="your-key" bash install-mcode-saia.sh [OPTIONS]
 
 Installs the GWDG SAIA setup for mcode:
-  - Registers custom_provider:gwdg-saia with 16 ready SAIA models
+  - Registers custom_provider:gwdg-saia with all ready SAIA models (src/models.txt)
   - Configures provider with base URL and API format
 
 Options:
@@ -406,12 +406,10 @@ apertus-70b-instruct-2509
 devstral-2-123b-instruct-2512
 qwen3.8-27b
 deepseek-v4-flash-0731
-qwen3.5-122b-a10b
 glm-5.3-flash
 qwen3-coder-next
 qwen3-omni-30b-a3b-instruct
 mistral-medium-3.5-128b
-glm-4.7
 qwen3.5-397b-a17b
 gemma-4-31b-it
 qwen3.6-35b-a3b
@@ -430,7 +428,7 @@ if [[ -n "$KEY_FILE" ]]; then CHILD_ARGS+=(--key-file "$KEY_FILE"); fi
 echo ""
 echo "✓ GWDG SAIA provider installed successfully!"
 echo "  Provider ID: custom_provider:gwdg-saia"
-echo "  Models: 16 ready SAIA models"
+echo "  Models: $(grep -cvE '^[[:space:]]*(#|$)' "$EXTRACT_DIR/src/models.txt") ready SAIA models"
 echo ""
 echo "Usage: mcode                       # SAIA is the default model"
 echo "       mcode --model custom_provider:gwdg-saia/<model>"

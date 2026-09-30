@@ -2,7 +2,7 @@
 
 ## Summary
 
-This installer registers the GWDG SAIA provider in mcode (MiniMax Code) with all 16 ready models.
+This installer registers the GWDG SAIA provider in mcode (MiniMax Code) with all 14 ready models.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ SAIA_API_KEY="your-key" bash install-mcode-saia.sh --yes
 
 This one-shot installer:
 - Installs mcode (if missing) via the official GitHub installer
-- Registers the GWDG SAIA provider with 16 ready models
+- Registers the GWDG SAIA provider with 14 ready models
 - Works on macOS, Linux, and WSL
 
 ## Detailed installation
@@ -60,7 +60,7 @@ bash install-mcode-saia.sh --key-file ~/.local/share/opencode/auth.json
 The installer will:
 - Verify mcode is installed
 - Back up your existing `~/.minimax/config.yaml` if it contains a `custom_provider:` block
-- Run `mcode provider add` with all 16 ready SAIA models
+- Run `mcode provider add` with all 14 ready SAIA models
 - Verify the provider was added successfully
 - Set `defaultModel` to a SAIA model, so mcode runs without a MiniMax account
 
@@ -94,18 +94,16 @@ mcode --model "custom_provider:gwdg-saia/deepseek-v4-flash-0731"
 
 ### Available models
 
-All 16 ready SAIA models:
+All 14 ready SAIA models:
 
 - apertus-70b-instruct-2509
 - devstral-2-123b-instruct-2512
 - qwen3.8-27b
 - deepseek-v4-flash-0731
-- qwen3.5-122b-a10b
 - glm-5.3-flash
 - qwen3-coder-next
 - qwen3-omni-30b-a3b-instruct
 - mistral-medium-3.5-128b
-- glm-4.7
 - qwen3.5-397b-a17b
 - gemma-4-31b-it
 - qwen3.6-35b-a3b
