@@ -13,12 +13,19 @@ SAIA_BASE_URL="${SAIA_BASE_URL:-https://chat-ai.academiccloud.de/v1}"
 #   SAIA_API_KEY="your-key" ./add-saia-mcode.sh
 #   ./add-saia-mcode.sh --key "your-key"
 #   ./add-saia-mcode.sh --key-file ~/.local/share/opencode/auth.json
+#   SAIA_API_KEYS_EXTRA="key2,key3" ./add-saia-mcode.sh --key "your-key"
 #
 # Note: mcode v0.5.0 stores the API key directly in ~/.minimax/config.yaml
 # regardless of --api-key-env. The key is written in plaintext with 600 perms.
+#
+# With extra keys (SAIA_API_KEYS_EXTRA / --extra-keys / --extra-keys-file) the
+# provider's base URL is the local saia-keyring proxy instead, which swaps to the
+# next key when the active one is revoked, drained or rate limited (saia-keyring.sh).
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MODELS_FILE="${SCRIPT_DIR}/models.txt"
+# shellcheck source=saia-keyring.sh
+source "${SCRIPT_DIR}/saia-keyring.sh"
 
 # ── Parse arguments ──────────────────────────────────────────────────
 KEY=""
@@ -35,12 +42,17 @@ while [[ $# -gt 0 ]]; do
       KEY_FILE="$2"
       shift 2
       ;;
+    --extra-keys|--extra-keys-file|--keyring|--no-keyring)
+      keyring_arg "$@"
+      shift "$KEYRING_SHIFT"
+      ;;
     -h|--help)
       echo "Usage: SAIA_API_KEY=... ./add-saia-mcode.sh [--key <key> | --key-file <path>]"
       echo ""
       echo "Options:"
       echo "  --key <value>       SAIA API key (overrides SAIA_API_KEY env)"
       echo "  --key-file <path>   File containing the SAIA API key"
+      keyring_usage
       echo "  -h, --help          Show this help"
       echo ""
       echo "The API key is taken from:"
@@ -150,6 +162,10 @@ for m in "${MODELS[@]}"; do
   MODEL_FLAGS="$MODEL_FLAGS --model $m"
 done
 
+# ── Automatic key swap (2+ keys) ─────────────────────────────────────
+# Sets SAIA_EFFECTIVE_BASE_URL: the local proxy when it is up, else SAIA itself.
+keyring_setup "$SAIA_KEY"
+
 # ── Drop any previous GWDG SAIA provider ─────────────────────────────
 # `mcode provider add` does not replace an existing provider, it appends a
 # suffixed clone (gwdg-saia-2, -3, ...). Remove first so re-running the
@@ -171,13 +187,13 @@ done
 
 # ── Run provider add ─────────────────────────────────────────────────
 echo "Adding GWDG SAIA provider to mcode..."
-echo "Base URL: $SAIA_BASE_URL"
+echo "Base URL: $SAIA_EFFECTIVE_BASE_URL"
 echo "API format: openai-completions"
 echo "Models: ${#MODELS[@]} models"
 
 mcode provider add \
   --name "GWDG SAIA" \
-  --base-url "$SAIA_BASE_URL" \
+  --base-url "$SAIA_EFFECTIVE_BASE_URL" \
   --api-format "openai-completions" \
   $MODEL_FLAGS \
   --api-key-env "SAIA_API_KEY"

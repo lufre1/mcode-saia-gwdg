@@ -18,6 +18,9 @@ This one-shot installer:
 - Installs mcode (if missing) via the official GitHub installer
 - Registers the GWDG SAIA provider with 14 ready models
 - Points `defaultModel` at SAIA, so mcode runs with **no MiniMax account** — see [Outage resilience](SETUP.md#outage-resilience) for what mcode does and does not survive
+- With extra keys (`SAIA_API_KEYS_EXTRA="key2,key3"`), routes mcode through a local
+  key-rotating proxy that swaps keys automatically when one is revoked, drained or
+  rate limited (see `SETUP.md` → *Multiple keys*)
 - Works on macOS, Linux, and WSL
 
 Or see `SETUP.md` for detailed instructions and troubleshooting.
@@ -30,8 +33,9 @@ Or see `SETUP.md` for detailed instructions and troubleshooting.
 | `build.sh` | Regenerates the installer from source files |
 | `src/add-saia-mcode.sh` | Live source script (portable key sourcing) |
 | `src/models.txt` | List of 14 ready SAIA models |
-| `test/fake-saia.py` | Fake SAIA endpoint that 503s on demand (not packed) |
-| `test/test-resume.sh` | Measures how much of an outage mcode absorbs (not packed) |
+| `src/saia_keyring.py`, `src/saia-keyring.sh` | Key-rotating proxy and its install logic, vendored from `opencode-extras/keyring/` (never edit here) |
+| `test/fake-saia.py` | Fake SAIA endpoint that 503s, or 401s a "revoked" key, on demand (not packed) |
+| `test/test-resume.sh` | Measures how much of an outage mcode absorbs, and checks the automatic key swap (not packed) |
 
 ## Architecture
 
@@ -42,7 +46,8 @@ SAIA_API_KEY → install-mcode-saia.sh → [mcode install] → src/add-saia-mcod
 
 ## Maintaining
 
-After changing `src/add-saia-mcode.sh` or `src/models.txt`, regenerate the installer:
+After changing `src/add-saia-mcode.sh` or `src/models.txt`, regenerate the installer
+(the keyring files are synced in by `opencode-extras/keyring/sync.sh`, which also rebuilds):
 
 ```bash
 ./build.sh
