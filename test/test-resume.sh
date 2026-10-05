@@ -87,3 +87,12 @@ grep -q "OK-FAKE-RESUME" <<<"$OUT" || fail "canned reply missing — the success
 # Raise FAKE_FAIL_COUNT past 5 and this test SHOULD fail: that is the ceiling.
 
 echo "PASS: absorbed $FAIL_COUNT consecutive 503s, recovered on request $CALLS"
+
+# ── SAIA_BASE_URL override (used by the benchmark's local gateway) ─────
+OV="$WORK/override"; mkdir -p "$OV"
+MINIMAX_DATA_DIR="$OV" SAIA_BASE_URL="http://127.0.0.1:$PORT/v1" SAIA_API_KEY=dummy \
+  bash ../src/add-saia-mcode.sh >"$WORK/override.log" 2>&1 \
+  || { OUT="$(cat "$WORK/override.log")"; fail "installer failed with SAIA_BASE_URL set"; }
+MINIMAX_DATA_DIR="$OV" mcode provider list --json | grep -q "http://127.0.0.1:$PORT/v1" \
+  || { OUT="$(cat "$WORK/override.log")"; fail "SAIA_BASE_URL not registered with mcode"; }
+echo "PASS: SAIA_BASE_URL override"

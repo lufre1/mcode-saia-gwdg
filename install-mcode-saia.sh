@@ -2,7 +2,7 @@
 #
 # install-mcode-saia.sh — GENERATED FILE, DO NOT EDIT.
 # Regenerate with: ./build.sh  (in the mcode-saia repo)
-# Source: mcode-saia commit 604e845-dirty, packed 2026-09-29T20:04:09Z
+# Source: mcode-saia commit 3b9cd05-dirty, packed 2026-10-05T10:01:23Z
 #
 # Installs the GWDG SAIA setup for mcode: provider + 14 models.
 
@@ -176,6 +176,9 @@ cat >"$EXTRACT_DIR/src/add-saia-mcode.sh" <<'__MCS_EOF__'
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Base URL override for tests and local gateways (default: production SAIA).
+SAIA_BASE_URL="${SAIA_BASE_URL:-https://chat-ai.academiccloud.de/v1}"
+
 # add-saia-mcode.sh — Add GWDG SAIA provider to mcode (MiniMax Code)
 #
 # Reads SAIA API key from environment variable SAIA_API_KEY or --key/--key-file.
@@ -343,13 +346,13 @@ done
 
 # ── Run provider add ─────────────────────────────────────────────────
 echo "Adding GWDG SAIA provider to mcode..."
-echo "Base URL: https://chat-ai.academiccloud.de/v1"
+echo "Base URL: $SAIA_BASE_URL"
 echo "API format: openai-completions"
 echo "Models: ${#MODELS[@]} models"
 
 mcode provider add \
   --name "GWDG SAIA" \
-  --base-url "https://chat-ai.academiccloud.de/v1" \
+  --base-url "$SAIA_BASE_URL" \
   --api-format "openai-completions" \
   $MODEL_FLAGS \
   --api-key-env "SAIA_API_KEY"
