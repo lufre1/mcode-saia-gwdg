@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
 # install-mcode-saia.sh — GENERATED FILE, DO NOT EDIT.
-# Regenerate with: ./build.sh  (in the mcode-saia repo)
-# Source: mcode-saia commit fbb20e3, packed 2026-10-06T06:56:13Z
+# Regenerate with: ./build.sh  (in the mcode-saia-gwdg repo)
+# Source: mcode-saia-gwdg commit 8be419c, packed 2026-10-06T07:01:54Z
 #
 # Installs the GWDG SAIA setup for mcode: provider + 14 models.
 
