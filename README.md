@@ -33,7 +33,7 @@ Or see `SETUP.md` for detailed instructions and troubleshooting.
 | `build.sh` | Regenerates the installer from source files |
 | `src/add-saia-mcode.sh` | Live source script (portable key sourcing) |
 | `src/models.txt` | List of 14 ready SAIA models |
-| `src/saia_keyring.py`, `src/saia-keyring.sh` | Key-rotating proxy and its install logic, vendored from `opencode-extras/keyring/` (never edit here) |
+| `src/saia_keyring.py`, `src/saia-keyring.sh` | Key-rotating proxy and its install logic, vendored from `opencode-saia-gwdg/keyring/` (never edit here) |
 | `test/fake-saia.py` | Fake SAIA endpoint that 503s, or 401s a "revoked" key, on demand (not packed) |
 | `test/test-resume.sh` | Measures how much of an outage mcode absorbs, and checks the automatic key swap (not packed) |
 
@@ -47,7 +47,7 @@ SAIA_API_KEY → install-mcode-saia.sh → [mcode install] → src/add-saia-mcod
 ## Maintaining
 
 After changing `src/add-saia-mcode.sh` or `src/models.txt`, regenerate the installer
-(the keyring files are synced in by `opencode-extras/keyring/sync.sh`, which also rebuilds):
+(the keyring files are synced in by `opencode-saia-gwdg/keyring/sync.sh`, which also rebuilds):
 
 ```bash
 ./build.sh
