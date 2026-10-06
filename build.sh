@@ -47,8 +47,8 @@ cat >"$TMP_OUT" <<MCS_GEN_HEADER
 #!/usr/bin/env bash
 #
 # install-mcode-saia.sh — GENERATED FILE, DO NOT EDIT.
-# Regenerate with: ./build.sh  (in the mcode-saia repo)
-# Source: mcode-saia commit $COMMIT$DIRTY, packed $STAMP
+# Regenerate with: ./build.sh  (in the mcode-saia-gwdg repo)
+# Source: mcode-saia-gwdg commit $COMMIT$DIRTY, packed $STAMP
 #
 # Installs the GWDG SAIA setup for mcode: provider + $(grep -cvE '^[[:space:]]*(#|$)' src/models.txt) models.
 

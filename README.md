@@ -1,4 +1,4 @@
-# mcode-saia
+# mcode-saia-gwdg
 
 GWDG SAIA provider for **mcode** (MiniMax Code)
 
