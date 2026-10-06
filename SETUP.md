@@ -152,26 +152,27 @@ SAIA requests. Not packed into the installer.
 
 ## Multiple keys: automatic key swap
 
-SAIA rate limits are per key (30/min, 200/hour, 1000/day, 3000/month). Give the
-installer extra keys and mcode swaps to the next one by itself when the active key is
-revoked (401/403), drained (its hour/day/month budget nearly used up) or rate limited
-(429) — the same rotation the opencode setup does. mcode's own retry loop (above)
-would just resend to the same dead key; the swap happens before mcode sees an error.
+SAIA rate limits are per key (30/min, 200/hour, 1000/day, 3000/month). Opt in with
+`--keyring`, give the installer extra keys, and mcode swaps to the next one by itself
+when the active key is revoked (401/403), drained (its hour/day/month budget nearly used
+up) or rate limited (429) — the same rotation the opencode setup does. mcode's own retry
+loop (above) would just resend to the same dead key; the swap happens before mcode sees
+an error.
 
 ```bash
 # Extra keys via the environment, so they never show up in `ps`
-SAIA_API_KEYS_EXTRA="key2,key3" bash install-mcode-saia.sh --yes
+SAIA_API_KEYS_EXTRA="key2,key3" bash install-mcode-saia.sh --yes --keyring
 
 # Or reuse the extra keys of an opencode setup
-bash install-mcode-saia.sh --yes --extra-keys-file ~/.local/share/opencode/saia-gwdg-keys.json
+bash install-mcode-saia.sh --yes --keyring --extra-keys-file ~/.local/share/opencode/saia-gwdg-keys.json
 ```
 
-With 2+ keys the installer starts **saia-keyring**, a small local proxy
+With `--keyring` the installer starts **saia-keyring**, a small local proxy
 (`~/.local/share/saia-keyring/saia_keyring.py`, stdlib Python 3), and registers
 `http://127.0.0.1:8788/v1` as the provider's `baseURL` (via `mcode provider add`, in
 `~/.minimax/config.yaml`) instead of SAIA. mcode keeps sending its usual key; the proxy
 only serves requests carrying one of the configured keys and forwards them on the
-active key. Every harness installed with extra keys shares the same proxy and key list.
+active key. Every harness installed with `--keyring` shares the same proxy and key list.
 Keys are only swapped before a response starts — a stream in progress is never cut over.
 
 | What | Where |
@@ -180,12 +181,13 @@ Keys are only swapped before a response starts — a stream in progress is never
 | Status | `saia-keyring status` — per-key budget, the active key, rejected keys |
 | Log | `~/.cache/saia-keyring/proxy.log` |
 | Service | systemd user unit `saia-keyring` (Linux), launchd agent `de.gwdg.saia-keyring` (macOS), otherwise a line in your shell rc |
-| Turn off | re-run with `--no-keyring`: mcode talks to SAIA directly again |
+| Turn off | re-run without `--keyring`: mcode talks to SAIA directly again |
 
-With a single key nothing changes: mcode talks to SAIA directly, as before. When every
-key is out, mcode shows why — e.g. `All 3 SAIA key(s) rejected by SAIA (...) — the
-key(s) are revoked or expired`. `test/test-resume.sh` checks the swap with a real
-`mcode exec` against the fake endpoint.
+Without `--keyring` none of this is installed: mcode talks to SAIA directly with one
+key, as before (extra keys are then ignored). When every key is out, mcode shows why —
+e.g. `All 3 SAIA key(s) rejected by SAIA (...) — the key(s) are revoked or expired`.
+`test/test-resume.sh` checks the swap with a real `mcode exec` against the fake
+endpoint.
 
 ## Config schema
 

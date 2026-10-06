@@ -109,6 +109,17 @@ MINIMAX_DATA_DIR="$OV" mcode provider list --json | grep -q "http://127.0.0.1:$P
   || { OUT="$(cat "$WORK/override.log")"; fail "SAIA_BASE_URL not registered with mcode"; }
 echo "PASS: SAIA_BASE_URL override"
 
+# ── Extra keys without --keyring: SAIA directly, no proxy (opt-in only) ─
+NK="$WORK/nokeyring"; mkdir -p "$NK/home"
+HOME="$NK/home" MINIMAX_DATA_DIR="$NK" SAIA_API_KEYS_EXTRA=extra-key \
+  SAIA_API_KEY=dummy bash ../src/add-saia-mcode.sh >"$WORK/nokeyring.log" 2>&1 \
+  || { cat "$WORK/nokeyring.log" >&2; fail "installer failed with extra keys but no --keyring"; }
+MINIMAX_DATA_DIR="$NK" mcode provider list --json | grep -q "https://chat-ai.academiccloud.de/v1" \
+  || fail "extra keys alone pointed mcode away from SAIA"
+[[ ! -e "$NK/home/.config/saia-keyring" ]] || fail "keyring set up without --keyring"
+grep -q "opt-in (add --keyring)" "$WORK/nokeyring.log" || fail "no note about the unused extra keys"
+echo "PASS: extra keys without --keyring: direct to SAIA, no proxy"
+
 # ── Automatic key swap: two keys, the first one revoked ───────────────
 # A second fake that never 503s and answers 401 to the revoked key: the turn can
 # only succeed on mcode's first request if the proxy fails over.

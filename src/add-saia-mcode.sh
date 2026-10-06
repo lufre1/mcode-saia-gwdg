@@ -13,14 +13,15 @@ SAIA_BASE_URL="${SAIA_BASE_URL:-https://chat-ai.academiccloud.de/v1}"
 #   SAIA_API_KEY="your-key" ./add-saia-mcode.sh
 #   ./add-saia-mcode.sh --key "your-key"
 #   ./add-saia-mcode.sh --key-file ~/.local/share/opencode/auth.json
-#   SAIA_API_KEYS_EXTRA="key2,key3" ./add-saia-mcode.sh --key "your-key"
+#   SAIA_API_KEYS_EXTRA="key2,key3" ./add-saia-mcode.sh --key "your-key" --keyring
 #
 # Note: mcode v0.5.0 stores the API key directly in ~/.minimax/config.yaml
 # regardless of --api-key-env. The key is written in plaintext with 600 perms.
 #
-# With extra keys (SAIA_API_KEYS_EXTRA / --extra-keys / --extra-keys-file) the
-# provider's base URL is the local saia-keyring proxy instead, which swaps to the
-# next key when the active one is revoked, drained or rate limited (saia-keyring.sh).
+# With --keyring (opt-in) and extra keys (SAIA_API_KEYS_EXTRA / --extra-keys /
+# --extra-keys-file) the provider's base URL is the local saia-keyring proxy
+# instead, which swaps to the next key when the active one is revoked, drained
+# or rate limited (saia-keyring.sh).
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MODELS_FILE="${SCRIPT_DIR}/models.txt"
@@ -162,7 +163,7 @@ for m in "${MODELS[@]}"; do
   MODEL_FLAGS="$MODEL_FLAGS --model $m"
 done
 
-# ── Automatic key swap (2+ keys) ─────────────────────────────────────
+# ── Automatic key swap (--keyring) ───────────────────────────────────
 # Sets SAIA_EFFECTIVE_BASE_URL: the local proxy when it is up, else SAIA itself.
 keyring_setup "$SAIA_KEY"
 

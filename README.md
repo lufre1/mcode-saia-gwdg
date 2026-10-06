@@ -18,7 +18,7 @@ This one-shot installer:
 - Installs mcode (if missing) via the official GitHub installer
 - Registers the GWDG SAIA provider with 14 ready models
 - Points `defaultModel` at SAIA, so mcode runs with **no MiniMax account** — see [Outage resilience](SETUP.md#outage-resilience) for what mcode does and does not survive
-- With extra keys (`SAIA_API_KEYS_EXTRA="key2,key3"`), routes mcode through a local
+- Optional, with `--keyring`: routes mcode through a local
   key-rotating proxy that swaps keys automatically when one is revoked, drained or
   rate limited (see `SETUP.md` → *Multiple keys*)
 - Works on macOS, Linux, and WSL
