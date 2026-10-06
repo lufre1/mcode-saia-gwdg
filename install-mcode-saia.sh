@@ -2,7 +2,7 @@
 #
 # install-mcode-saia.sh — GENERATED FILE, DO NOT EDIT.
 # Regenerate with: ./build.sh  (in the mcode-saia repo)
-# Source: mcode-saia commit 2a97af1, packed 2026-10-06T06:16:05Z
+# Source: mcode-saia commit 4e5856a, packed 2026-10-06T06:16:27Z
 #
 # Installs the GWDG SAIA setup for mcode: provider + 14 models.
 
@@ -24,9 +24,9 @@ Options:
   -y, --yes           answer yes to prompts (e.g. installing mcode)
       --key <value>   SAIA API key (overrides SAIA_API_KEY env)
       --key-file <p>  file containing the SAIA API key
-      --extra-keys <k2,k3>      extra SAIA keys for automatic failover
+      --extra-keys <k2,k3>      with --keyring: extra SAIA keys to swap to
                                 (or SAIA_API_KEYS_EXTRA, which keeps them out of ps)
-      --extra-keys-file <path>  extra keys from {"keys": [...]} (opencode's
+      --extra-keys-file <path>  with --keyring: extra keys from {"keys": [...]} (opencode's
                                 saia-gwdg-keys.json) or one key per line
       --keyring                 opt in: route through the local key-rotating proxy
       --no-keyring              talk to SAIA directly with one key (the default)
